@@ -50,7 +50,7 @@ export default function Login () {
         <div className='flex justify-center'>
           <img className='w-24 rounded-md' src='/assets/image.png' alt='' />
         </div>
-        <h2 className='text-xl font-bold text-gray-800 text-center font-[Lato]'>
+        <h2 className='text-xl my-4 font-bold text-gray-800 text-center font-[Lato]'>
           Login to your account
         </h2>
         <div className='flex-column'>
