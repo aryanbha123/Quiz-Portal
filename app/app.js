@@ -24,6 +24,12 @@ app.use(cors(corsConfig));
 app.use(morgan('dev'));
 
 
+app.get('/',(req,res)=>{
+  res.send('Hello World!')
+})
+
+
+
 app.get('/university/data/:name/',async (req, res) => {
   try {
     const response = await axios.get('http://universities.hipolabs.com/search',{
