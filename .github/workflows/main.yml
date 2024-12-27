@@ -1,0 +1,20 @@
+name: Simple Echo Workflow
+
+on:
+  push:
+    branches:
+      - main   # Trigger the workflow when pushing to the 'main' branch
+  pull_request:
+    branches:
+      - main   # Trigger the workflow for pull requests targeting the 'main' branch
+
+jobs:
+  echo-message:
+    runs-on: ubuntu-latest   # Runs on the latest version of Ubuntu
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3   # Checkout the code of the repository
+      
+      - name: Echo a message
+        run: echo "Changes detected! Workflow is running."   # Simple echo statement
