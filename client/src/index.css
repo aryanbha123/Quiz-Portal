@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+html{
+  font-family: 'Lato'
+}
+.label{
+  @apply text-xs text-gray-700 font-bold;
+}
+.input{
+  @apply w-full p-2 border border-gray-500;
+  outline: none;
+}
+.form-button{
+  @apply bg-blue-500 hover:bg-sky-700 text-white font-semibold py-2 px-4;
+}
