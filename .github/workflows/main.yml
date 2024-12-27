@@ -1,12 +1,14 @@
-name: Simple Echo Workflow
+name: Echo Workflow for Specific Folders
 
 on:
   push:
-    branches:
-      - main   # Trigger the workflow when pushing to the 'main' branch
+    paths:
+      - 'app/**'      # Trigger for changes in the 'app' folder
+      - 'client/**'   # Trigger for changes in the 'client' folder
   pull_request:
-    branches:
-      - main   # Trigger the workflow for pull requests targeting the 'main' branch
+    paths:
+      - 'app/**'      # Trigger for pull requests affecting the 'app' folder
+      - 'client/**'   # Trigger for pull requests affecting the 'client' folder
 
 jobs:
   echo-message:
@@ -16,5 +18,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3   # Checkout the code of the repository
       
-      - name: Echo a message
-        run: echo "Changes detected! Workflow is running."   # Simple echo statement
+      - name: Echo a message for app folder changes
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^app/'; then
+            echo "Changes detected in the 'app' folder!"
+          fi
+
+      - name: Echo a message for client folder changes
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^client/'; then
+            echo "Changes detected in the 'client' folder!"
+          fi
