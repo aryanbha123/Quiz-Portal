@@ -1,113 +1,111 @@
-const HomeSection = () => {
-    return (
-      <section className='bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-200 py-16 px-6 md:px-12'>
-        <div className='container mx-auto flex flex-col md:flex-row items-center justify-between gap-10'>
-          {/* Text Content */}
-          <div className='max-w-lg text-center md:text-left'>
-            <h1 className='text-4xl md:text-5xl font-extrabold mb-6 leading-tight'>
-              Welcome to Your Dashboard
-            </h1>
-            <p className='text-lg md:text-xl mb-8'>
-              Manage your projects, track performance, and achieve your goals
-              efficiently. Your one-stop platform for productivity and success.
-            </p>
-            <div className='flex flex-col md:flex-row gap-4 justify-center md:justify-start'>
-              <button className='bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium py-3 px-6 rounded-lg shadow-md'>
-                Get Started
-              </button>
-              <button className='bg-transparent border border-gray-300 dark:border-gray-500 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 font-medium py-3 px-6 rounded-lg'>
-                Learn More
-              </button>
-            </div>
-          </div>
-          {/* Illustration */}
-          <div className='flex justify-center'>
-            <img
-              src='https://via.placeholder.com/400x400.png?text=Illustration'
-              alt='Dashboard Illustration'
-              className='w-80 md:w-96 rounded-lg shadow-lg dark:shadow-none'
-            />
-          </div>
+import React from 'react';
+import { Paper, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto';
+import { FiSettings, FiBell } from 'react-icons/fi';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+
+export default function Home() {
+  const updates = [
+    'Completed Module 1 of React Basics.',
+    'Achieved 90% in JavaScript Assessment.',
+    'Enrolled in Advanced Node.js Course.',
+  ];
+
+  const progressData = {
+    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+    datasets: [
+      {
+        label: 'Learning Progress (%)',
+        data: [20, 40, 70, 90],
+        fill: false,
+        borderColor: '#3182CE',
+        tension: 0.1,
+      },
+    ],
+  };
+
+  return (
+    <div className="flex min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
+      {/* Main Content */}
+      <main className="flex-1 p-8 bg-white bg-opacity-90 dark:bg-gray-800 rounded-3xl shadow-xl">
+        {/* Welcome Section */}
+        <Paper className="p-6 mb-6 bg-blue-700 text-white rounded-2xl shadow-xl">
+          <Typography variant="h5" className="font-semibold text-xl">
+            Welcome, John Doe!
+          </Typography>
+          <Typography className="mt-2 text-lg">
+            Welcome to your learning portal! Here you can track your progress, view updates, and explore additional resources to help you succeed in your learning journey.
+          </Typography>
+        </Paper>
+
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Latest Updates Section */}
+          <Paper className="p-5 bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg shadow-lg hover:shadow-2xl transition-all">
+            <Typography
+              variant="h6"
+              className="mb-4 text-blue-600 font-semibold"
+            >
+              Latest Updates
+            </Typography>
+            <List>
+              {updates.map((update, index) => (
+                <React.Fragment key={index}>
+                  <ListItem className="hover:bg-blue-50 dark:hover:bg-gray-600 rounded-md transition-all">
+                    <ListItemText primary={update} />
+                  </ListItem>
+                  {index < updates.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </List>
+          </Paper>
+
+          {/* User Progress Section */}
+          <Paper className="p-5 bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg shadow-lg hover:shadow-2xl transition-all">
+            <Typography
+              variant="h6"
+              className="mb-4 text-sky-600 font-semibold"
+            >
+              Your Progress
+            </Typography>
+            <Line data={progressData} />
+          </Paper>
+
+          {/* Calendar Section */}
+          <Paper className="p-5 bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg shadow-lg hover:shadow-2xl transition-all">
+            <Typography variant="h6" className="mb-4 text-sky-600 font-semibold">
+              Calendar
+            </Typography>
+            <Calendar className="rounded-lg shadow-md transition-all transform hover:scale-105" />
+          </Paper>
         </div>
-        <LearnMore/>
-      </section>
-    )
-  }
-  
-  export default HomeSection
-  
-  const LearnMore = () => {
-    return (
-      <section className='bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-200 py-16 '>
-        <div className='container mx-auto flex flex-col md:flex-row items-center justify-between gap-10'>
-        
-  
-          {/* Tutorial */}
-          <div className='md:w-1/2'>
-            <h2 className='text-3xl font-extrabold text-center md:text-left mb-6'>
-              How Our Portal Works
-            </h2>
-            <p className='text-lg mb-6'>
-              Our platform is designed with ease of use in mind, offering seamless
-              navigation and an intuitive interface. Here's how you can get
-              started:
-            </p>
-  
-            <div className='space-y-6'>
-              <div className='flex items-start gap-3'>
-                <span className='text-2xl text-indigo-600 dark:text-indigo-400'>
-                  1.
-                </span>
-                <p className='text-lg'>
-                  <strong>Sign Up:</strong> Create an account to access all
-                  features and manage your data securely.
-                </p>
-              </div>
-              <div className='flex items-start gap-3'>
-                <span className='text-2xl text-indigo-600 dark:text-indigo-400'>
-                  2.
-                </span>
-                <p className='text-lg'>
-                  <strong>Customize Your Profile:</strong> Personalize your
-                  settings, upload a photo, and update your details.
-                </p>
-              </div>
-              <div className='flex items-start gap-3'>
-                <span className='text-2xl text-indigo-600 dark:text-indigo-400'>
-                  3.
-                </span>
-                <p className='text-lg'>
-                  <strong>Explore Features:</strong> Navigate through the portal
-                  to explore all available tools and resources.
-                </p>
-              </div>
-              <div className='flex items-start gap-3'>
-                <span className='text-2xl text-indigo-600 dark:text-indigo-400'>
-                  4.
-                </span>
-                <p className='text-lg'>
-                  <strong>Stay Updated:</strong> Receive regular notifications and
-                  updates to keep track of your progress.
-                </p>
-              </div>
-            </div>
-  
-            <div className='text-center mt-8'>
-              <button className='bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium py-3 px-6 rounded-lg shadow-md'>
-                View Learning Material
-              </button>
-            </div>
-          </div>
-            {/* Image Preview */}
-            <div className='flex justify-center md:w-1/2'>
-            <img
-              src='https://via.placeholder.com/600x400.png?text=Portal'
-              alt='Portal Preview'
-              className='rounded-lg shadow-lg max-w-full'
-            />
-          </div>
-        </div>
-      </section>
-    )
-  }
-  
+
+        {/* Motivational Quote Section */}
+        <Paper className="p-5 bg-green-500 text-white rounded-2xl shadow-xl mt-6">
+          <Typography variant="h6" className="mb-4 text-center font-bold">
+            "Learning is not attained by chance, it must be sought for with ardor and attended to with diligence."
+          </Typography>
+        </Paper>
+
+        {/* Usage Information Section */}
+        <Paper className="p-5 bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg shadow-lg hover:shadow-2xl transition-all mt-6">
+          <Typography variant="h6" className="mb-4 text-blue-600 font-semibold">
+            How to Use This Portal
+          </Typography>
+          <Typography className="text-lg">
+            This portal is designed to help you track your learning progress, receive updates on your courses, and stay on top of upcoming assignments and deadlines.
+            <br />
+            <strong>Key Features:</strong>
+            <ul className="list-disc pl-6 mt-2">
+              <li>Track your learning progress with weekly milestones.</li>
+              <li>View your latest updates and achievements.</li>
+              <li>Stay organized with the integrated calendar for deadlines and important events.</li>
+            </ul>
+          </Typography>
+        </Paper>
+      </main>
+    </div>
+  );
+}

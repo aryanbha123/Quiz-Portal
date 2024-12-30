@@ -7,6 +7,8 @@ import { corsConfig, db } from './config/config.js'
 import cookieParser from 'cookie-parser'
 import AuthRouter from './routes/authRoutes.js'
 import axios from 'axios'
+import solutionRouter from './routes/solutionRoutes.js'
+import QuizRouter from './routes/quizRoutes.js'
 
 dotenv.config({ path: './.env', });
 
@@ -47,6 +49,8 @@ app.get('/university/data/:name/',async (req, res) => {
 
 // your routes here
 app.use('/api/v1/auth/', AuthRouter);
+app.use('/api/v1/solution/', solutionRouter);
+app.use('/api/v1/', QuizRouter);
 
 
 app.get("*", (req, res) => {

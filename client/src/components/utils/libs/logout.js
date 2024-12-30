@@ -12,6 +12,7 @@ export const customSignOut = async () => {
         await signOut(auth);
         await axios.post(BASE_URL  + '/api/v1/auth/logout' , {} , {withCredentials:true});
         await store.dispatch(logoutUser());
+        window.location.reload();
     }catch(e){
         console.log(e);
     }finally{

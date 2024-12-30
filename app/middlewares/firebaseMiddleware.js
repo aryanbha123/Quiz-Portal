@@ -32,7 +32,7 @@ const authMiddleware = async (req, res, next) => {
       if (admintoken) {
         try {
           const adminUser = await verifyJWT(admintoken, ADMIN_JWT_SECRET);
-          req.admin = adminUser;
+          req.user = adminUser;
         } catch (error) {
           return res.status(401).json({ message: 'Invalid admin token', status: false });
         }

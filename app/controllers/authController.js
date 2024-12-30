@@ -4,20 +4,15 @@ import Users from '../models/UserModel.js';
 import { z as zod } from 'zod';
 import { ADMIN_JWT_SECRET, COOKIE_OPTIONS, USER_JWT_SECRET } from '../config/config.js';
 
-// Constants
-
-// Helper function to generate JWT tokens
 const generateToken = (id, role) => {
   const secretKey = role === "admin" ? ADMIN_JWT_SECRET : USER_JWT_SECRET;
   return jwt.sign({ id }, secretKey, { expiresIn: '7d' });
 };
 
-// Helper function to set cookie for token
 const setTokenCookie = (res, token, tokenName) => {
   res.cookie(tokenName, token, COOKIE_OPTIONS);
 };
 
-// Sign-in function
 export const signin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -35,7 +30,6 @@ export const signin = async (req, res) => {
       return res.status(401).json({ message: "Invalid password", status: false });
     }
 
-    // Generate and set token
     const token = generateToken(user._id, user.role);
     const tokenName = user.role === "admin" ? 'admintoken' : 'usertoken';
     setTokenCookie(res, token, tokenName);
@@ -47,7 +41,6 @@ export const signin = async (req, res) => {
   }
 };
 
-// Sign-up function
 export const signup = async (req, res) => {
   const schema = zod.object({
     name: zod.string().min(3, "Name must be at least 3 characters").max(20, "Name must be less than 20 characters"),
@@ -58,8 +51,7 @@ export const signup = async (req, res) => {
   try {
     const { name, email, password } = schema.parse(req.body);
 
-    // Check if user already exists
-    if (await Users.findOne({ email }).lean()) { // Using .lean()
+    if (await Users.findOne({ email }).lean()) { 
       return res.status(400).json({ message: "Email is already taken" });
     }
 
@@ -86,20 +78,20 @@ export const signup = async (req, res) => {
   }
 };
 
-// Get Profile function
 export const getProfile = async (req, res) => {
   try {
-    const user = await Users.findById(req.user.id || req.user.uid).select('-password').lean(); // Using .lean()
+    const user = await Users.findById(req.user?.id || req.user.uid ).select('-password').lean(); // Using .lean()
     if (!user) {
       return res.status(404).json({ message: "User not found", status: false });
     }
     res.status(200).json(user);
   } catch (error) {
+    console.log(error.message)
     res.status(401).json({ message: "Unauthorized User", status: false });
   }
 };
 
-// Logout function
+
 export const logout = async (req, res) => {
   try {
     const { usertoken, admintoken } = req.cookies;
@@ -127,7 +119,6 @@ export const googleLogin = async (req, res) => {
 
     const { email, displayName, uid, profile } = firebaseUser;
 
-    // Check if the user already exists
     let user = await Users.findOne({ email }).lean();
 
     if (!user) {

@@ -3,45 +3,56 @@ import { Link } from 'react-router-dom'
 import { EmailSvg, GoogleSvg, PasswordSvg } from '../utils/Svg'
 import { useInputValidation } from '6pp'
 import { useDispatch } from 'react-redux'
-import { loginFailed, loginRequest, loginSuccess } from '../../redux/reducers/userSlice'
+import {
+  loginFailed,
+  loginRequest,
+  loginSuccess
+} from '../../redux/reducers/userSlice'
 import { signInWithPopup } from 'firebase/auth'
 import axios from 'axios'
 import { BASE_URL } from '../../config'
 import { auth, googleAuthProvider } from '../../firebase'
 
 export default function Login () {
-  const email = useInputValidation('');
-  const password = useInputValidation('');
-  const dispatch = useDispatch();
-  const handelGoogleLogin = async (e) => {
-    e.preventDefault();
-    try{
-        const user = await signInWithPopup(auth,googleAuthProvider);
-        dispatch(loginRequest());
-        const token = await user.user.getIdToken();
-        const response = axios.post(`${BASE_URL}/api/v1/auth/google-login` , {} , {withCredentials:true
-            ,
-            headers:{
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        dispatch(loginSuccess((await response).data));
-    }catch(err){
-        console.log(err);
-        dispatch(loginFailed());
+  const email = useInputValidation('')
+  const password = useInputValidation('')
+  const dispatch = useDispatch()
+  const handelGoogleLogin = async e => {
+    e.preventDefault()
+    try {
+      const user = await signInWithPopup(auth, googleAuthProvider)
+      dispatch(loginRequest())
+      const token = await user.user.getIdToken()
+      const response = axios.post(
+        `${BASE_URL}/api/v1/auth/google-login`,
+        {},
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      dispatch(loginSuccess((await response).data))
+    } catch (err) {
+      console.log(err)
+      dispatch(loginFailed())
     }
   }
 
-  const handelLogin = async (e) => {
-
+  const handelLogin = async e => {
     e.preventDefault()
-    try{
-        dispatch(loginRequest());
-        const response = await axios.post(`${BASE_URL}/api/v1/auth/signin` , {email:email.value,password:password.value} , {withCredentials:true});
-        dispatch(loginSuccess(response.data));
-    }catch(error){
-        console.log(error);
-        dispatch(loginFailed());
+    try {
+      dispatch(loginRequest())
+      const response = await axios.post(
+        `${BASE_URL}/api/v1/auth/signin`,
+        { email: email.value, password: password.value },
+        { withCredentials: true }
+      )
+      dispatch(loginSuccess(response.data))
+    } catch (error) {
+      console.log(error)
+      dispatch(loginFailed())
     }
   }
   return (
@@ -58,7 +69,14 @@ export default function Login () {
         </div>
         <div className='inputForm'>
           <EmailSvg />
-          <input required value={email.value} onChange={email.changeHandler} placeholder='Enter your Email' className='input' type='text' />
+          <input
+            required
+            value={email.value}
+            onChange={email.changeHandler}
+            placeholder='Enter your Email'
+            className='input'
+            type='text'
+          />
         </div>
 
         <div className='flex-column'>
@@ -67,9 +85,9 @@ export default function Login () {
         <div className='inputForm'>
           <PasswordSvg />
           <input
-          value={password.value}
-          onChange={password.changeHandler}
-          required
+            value={password.value}
+            onChange={password.changeHandler}
+            required
             placeholder='Enter your Password'
             className='input'
             type='password'
@@ -79,17 +97,23 @@ export default function Login () {
         <div className='flex-row'>
           <span className='span'>Forgot password?</span>
         </div>
-        <button type='submit' className='button-submit'>Sign In</button>
+        <button type='submit' className='button-submit'>
+          Sign In
+        </button>
         <p className='p'>
           Don't have an account?{' '}
-          <Link to='/signup'className='span'>
+          <Link to='/signup' className='span'>
             Sign Up
           </Link>
         </p>
         <hr />
 
         <div className='flex-row'>
-          <button type='button' onClick={handelGoogleLogin} className='btn google'>
+          <button
+            type='button'
+            onClick={handelGoogleLogin}
+            className='btn google'
+          >
             <GoogleSvg />
             Google
           </button>
