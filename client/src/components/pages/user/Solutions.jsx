@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { IconButton, Button, TextField, Divider } from '@mui/material'
+import { IconButton, Button, TextField, Divider, CircularProgress } from '@mui/material'
 import {
   ArrowDropUp,
   Help,
@@ -37,7 +37,6 @@ const Solution = () => {
     const { name, value } = e.target
     setResponse({ ...response, [name]: value })
   }
-
   const handleFullScreen = () => {
     document
       .getElementById('root')
@@ -47,7 +46,7 @@ const Solution = () => {
   const getQuiz = async () => {
     try {
       const res = await axios.get(
-        `${BASE_URL}/api/v1/quiz/${id}?userId=${user._id}`
+        `${BASE_URL}/api/v1/quiz/solution/${id}?userId=${user._id}`
       )
       if (res.data) {
         setCurrentQuiz(res.data.quiz)
@@ -121,7 +120,8 @@ const Solution = () => {
         const remainingTime = quizEndTime - Date.now()
         setTimeLeft(Math.max(remainingTime, 0))
         if (remainingTime <= 0) {
-          clearInterval(interval) // Stop the timer if time is up
+          clearInterval(interval); // Stop the timer if time is up
+          alert('Quiz Time is Up!')
         }
       }, 1000)
       return () => clearInterval(interval)
@@ -129,17 +129,18 @@ const Solution = () => {
   }, [currentQuiz, solution])
 
   const submitHandler = async () => {
+    // setSubmit(true);
     try {
-      solution['response'] = response;
+      solution['response'] = response
       const res = await axios.post(`${BASE_URL}/api/v1/solution/user/submit`, {
         quizId: currentQuiz._id,
         userId: user._id,
         solution: solution
       })
       if (res.status === 200) {
-        alert("Quiz submitted successfully");
+        alert('Quiz submitted successfully')
         window.location.reload();
-        }
+      }
     } catch (error) {
       console.log(error)
     }
@@ -148,9 +149,16 @@ const Solution = () => {
     <main className='font-[Lato] bg-gray-100 h-screen w-screen overflow-x-hidden overflow-y-scroll'>
       {/* Header */}
       <header className='h-[70px] bg-white relative w-full'>
-        <nav className='fixed items-center bg-white z-20 px-10 w-full flex justify-between h-[70px] shadow-lg'>
+        <nav className='fixed items-center bg-white z-20 px-5 w-full flex justify-between h-[70px] shadow-lg'>
           <div className='flex'>
-            <img src='/assets/techease.jpg' className='h-8' alt='' />
+            <video
+              src='/assets/techease.mp4'
+              autoPlay
+              muted
+              loop
+              className='h-[60px]'
+              alt=''
+            />
           </div>
           <div className='flex gap-5'>
             {timeLeft > 0 ? (
@@ -170,13 +178,13 @@ const Solution = () => {
                 </div>
               </div>
             ) : (
-              'Loading ...'
+              <>
+                <span>Times Up : Redirecting ...</span>
+                <span className='bg-black z-50 fixed h-screen w-screen top-0 left-0 bg-opacity-5 flex flex-col justify-center items-center'>
+                  <CircularProgress/>
+                </span>
+              </>
             )}
-            <div className='ml-2 flex items-center'>
-              {Object.keys(response).length +
-                '  /  ' +
-                currentQuiz?.questions.length}
-            </div>
           </div>
           <div className='flex gap-3 items-center'>
             <IconButton onClick={handleFullScreen}>
@@ -188,39 +196,31 @@ const Solution = () => {
               <small>Help</small>
             </span>
             <Divider flexItem orientation='vertical' />
-            <Link to={'/user/quiz'} className='text-[#757575]'>
+            <Link to={'/user/practice'} className='text-[#757575]'>
               <ExitToApp color='inherit' />
               <small> Exit</small>
             </Link>
             <Divider flexItem orientation='vertical' />
-            <IconButton>
-              <Menu />
-            </IconButton>
+          
           </div>
         </nav>
       </header>
-
       {/* Main Content */}
-      <div className='flex flex-col h-[calc(100vh-70px)] pl-5 pr-28 py-10'>
-        {currentQuestions.map((question, index) => (
+      <div className='flex flex-col justify-between h-[calc(100vh-70px)] pl-5 pr-28 pt-10'>
+        {currentQuestions?.map((question, index) => (
           <div key={index} className='flex justify-between gap-5'>
             <div className='mb-8 flex-1 px-4 rounded-lg'>
               <h1 className='text-lg font-semibold mb-6 text-gray-900'>
                 Q{(currentPage - 1) * questionsPerPage + index + 1}:{' '}
                 {question.question}
               </h1>
-              {question.image ? (
+              {question.image &&
                 <img
                   src={question.image}
                   alt={`Question ${index + 1}`}
                   className='w-96 h-auto rounded-lg mb-4'
                 />
-              ) : (
-                <img
-                  src='https://i0.wp.com/www.bishoprook.com/wp-content/uploads/2021/05/placeholder-image-gray-16x9-1.png?resize=300%2C169&ssl=1'
-                  className='w-96'
-                />
-              )}
+              }
             </div>
 
             <div className='flex justify-start flex-[0.8]'>
@@ -279,9 +279,18 @@ const Solution = () => {
             </div>
           </div>
         ))}
-        <Divider flexItem orientation='vertical' />
 
-        <div className='flex fixed bottom-7 right-32 justify-end'>
+        <div className='flex justify-between items-center'>
+          <div className='flex pl-5 flex-col  items-start'>
+            <div className='flex gap-2'>
+              <span className='text-md font-semibold'>Attempted</span>
+              {Object.keys(response).length}
+            </div>
+            <div className='flex gap-2'>
+              <span className='text-md font-semibold'>Total Questions</span>
+              {currentQuiz?.questions.length}
+            </div>
+          </div>
           {currentPage === totalPages ? (
             <div className='flex gap-2'>
               <Button variant='contained' onClick={handlePreviousPage}>
@@ -330,7 +339,6 @@ const Solution = () => {
           </div>
         </div>
       </div>
-
       {open && <SolutionWarningModal setOpen={setOpen} />}
       {submit && <ConfirmModal />}
     </main>

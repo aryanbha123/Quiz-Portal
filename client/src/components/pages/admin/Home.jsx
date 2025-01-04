@@ -1,22 +1,20 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react'
-import { Label } from '../../utils/libs/form'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import React, { lazy, Suspense, useState } from 'react'
+import { Button, CircularProgress } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { Add, Delete, Edit, RemoveRedEye } from '@mui/icons-material'
+import { getQuiz } from '../../../redux/api/getQuiz'
 import axios from 'axios'
 import { BASE_URL } from '../../../config'
-import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { Add, Cloud, Delete, Edit, RemoveRedEye } from '@mui/icons-material'
-import { getQuiz } from '../../../redux/api/getQuiz'
 
 export default function Home () {
   const AddQuizModal = lazy(() => import('../../modals/Addquiz'))
-  const ExcelModal = lazy(() => import('../../modals/ExcelModal'))
   const [AddQuiz, setAddQuiz] = useState(false)
-  const [Upload, setUpload] = useState(false)
   const { hasMore, loading, data } = useSelector(s => s.quiz)
   const fetchMore = async () => {
     getQuiz()
   }
+
   return (
     <>
       <section>
@@ -55,7 +53,15 @@ export default function Home () {
                 setAddQuiz(true)
               }}
             >
-              Add Quiz <Add sx={{marginLeft:'10px'}} />
+              Manage Users
+            </Button>
+            <Button
+              variant='contained'
+              onClick={() => {
+                setAddQuiz(true)
+              }}
+            >
+              Add Quiz <Add sx={{ marginLeft: '10px' }} />
             </Button>
           </div>
         </div>
@@ -85,12 +91,24 @@ export default function Home () {
           <AddQuizModal setModalClose={setAddQuiz} />
         </Suspense>
       )}
-      
     </>
   )
 }
 
 function Table ({ data = [], hasMore, loading, fetchMore }) {
+  
+  const dispatch = useDispatch();
+  const deleteQuiz = async id => {
+    axios
+      .get(`${BASE_URL}/api/v1/quiz/del/${id}`)
+      .then(res => {
+        console.log(res.data);
+        dispatch(getQuiz());
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
   return (
     <div className='relative overflow-x-auto max-h-[700px] overflow-y-auto'>
       <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
@@ -120,7 +138,9 @@ function Table ({ data = [], hasMore, loading, fetchMore }) {
           {data.map((i, key) => (
             <tr
               key={key}
-              className={`${key % 2 == 0 ? 'bg-gray-100'  : 'bg-white'} border-b dark:bg-gray-800 dark:border-gray-700`}
+              className={`${
+                key % 2 == 0 ? 'bg-gray-100' : 'bg-white'
+              } border-b dark:bg-gray-800 dark:border-gray-700`}
             >
               <th
                 scope='row'
@@ -135,18 +155,18 @@ function Table ({ data = [], hasMore, loading, fetchMore }) {
                 {i.isAvailable ? 'Available' : 'Not Available'}
               </td>
               <td className='px-6 py-4'>
-                <Link to={'/admin/edit/' + i._id} >
+                <Link to={'/admin/edit/' + i._id}>
                   <Edit />
                 </Link>
               </td>
               <td className='px-6 py-4'>
-                <Link>
+                <Link onClick={() => {deleteQuiz(i._id)}} >
                   <Delete />
                 </Link>
               </td>
-              <td className="px-6 py-4">
+              <td className='px-6 py-4'>
                 <Link to={'/admin/view/' + i._id}>
-                  <RemoveRedEye/>
+                  <RemoveRedEye />
                 </Link>
               </td>
             </tr>

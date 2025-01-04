@@ -15,19 +15,25 @@ const quizSchema = z.object({
         answer: z.string().optional(),
     })).optional(),
     marks: z.number().positive("Marks must be a positive number"),
-    category:z.string().optional(),
-    tags:z.string().optional(),
-    difficulty:z.string().optional(),
+    category: z.string().optional(),
+    tags: z.string().optional(),
+    difficulty: z.string().optional(),
 });
 
 const questionSchema = z.object({
     question: z.string().nonempty("Question is required"),
     quizId: z.string().nonempty("Quiz ID is required"),
     marks: z.number().positive("Marks must be a positive number"),
-    negative:z.number().negative("Must be a negative number"),
+    negative: z.number().negative("Must be a negative number"),
     category: z.string().nonempty("Category is required"),
     image: z.string().optional(),
     answer: z.string().optional(),
+    options: z.array(
+        z.object({
+            text: z.string(),
+            isCorrect: z.boolean()
+        })
+    )
 });
 
 export const addQuiz = async (req, res) => {
@@ -37,13 +43,16 @@ export const addQuiz = async (req, res) => {
         await newQuiz.save();
         return sendRes("Quiz Created Successfully", 200, true, res);
     } catch (error) {
+        console.log(error);
         return sendRes(error.errors || error.message, 400, false, res);
     }
 };
 
 export const addQuestion = async (req, res) => {
     try {
-        const questionToAdd = questionSchema.parse(req.body);
+        const data = JSON.parse(req.body.data);
+        console.log(data)
+        const questionToAdd = questionSchema.parse(data);
 
         const quiz = await Quiz.findById(questionToAdd.quizId);
         if (!quiz) return sendRes("Quiz not found", 404, false, res);
@@ -127,7 +136,7 @@ export const getParticularSolution = async (req, res) => {
         const quiz = await Quiz.findById(req.params.id).populate('questions');
         if (!quiz) return sendRes("Quiz Not Found", 404, false, res);
 
-        let solution = await Solution.findOne({ quizId: quiz._id, userId });
+        let solution = await Solution.findOne({ quizId: quiz._id, userId , isSubmitted:false });
         if (!solution) {
             solution = new Solution({ quizId: quiz._id, userId });
             await solution.save();
@@ -136,5 +145,83 @@ export const getParticularSolution = async (req, res) => {
         return res.status(200).json({ quiz, solution });
     } catch (error) {
         return sendRes("Internal Server Error", 500, false, res);
+    }
+};
+
+
+
+export const editQuiz = async (req, res) => {
+    const { id } = req.params; // Get the ID from the route parameters
+    const quizData = req.body; // Get the quiz data from the request body
+
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Quiz ID is required for editing.' });
+        }
+
+        const updatedQuiz = await Quiz.findByIdAndUpdate(id, quizData, { new: true });
+        if (!updatedQuiz) {
+            return res.status(404).json({ message: 'Quiz not found.' });
+        }
+
+        return res.status(200).json({ message: 'Quiz updated successfully.', quiz: updatedQuiz });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'An error occurred while updating the quiz.', error });
+    }
+};
+
+
+export const delQuiz = async (req, res) => {
+    const { id } = req.params; // Get the ID from the route parameters
+
+    try {
+        if (!id) {
+            return res.status(400).json({ message: 'Quiz ID is required for deletion.' });
+        }
+
+        const deletedQuiz = await Quiz.findByIdAndDelete(id);
+        if (!deletedQuiz) {
+            return res.status(404).json({ message: 'Quiz not found.' });
+        }
+
+        return res.status(200).json({ message: 'Quiz deleted successfully.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'An error occurred while deleting the quiz.', error });
+    }
+};
+
+export const delQuestion = async (req, res) => {
+    try {
+        const { quizId, questionId } = req.query;
+
+        // Validate input
+        if (!quizId || !questionId) {
+            return res.status(400).json({ message: 'Invalid or missing parameters.' });
+        }
+
+        // Fetch quiz
+        const quiz = await Quiz.findById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found.' });
+        }
+
+        // Check if question exists
+        const questionExists = quiz.questions.some(question => question._id.toString() === questionId);
+        if (!questionExists) {
+            return res.status(404).json({ message: 'Question not found.' });
+        }
+
+        // Remove the question
+        quiz.questions = quiz.questions.filter(question => question._id.toString() !== questionId);
+
+        // Save changes
+        await quiz.save();
+
+        return res.status(200).json({ message: 'Question deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting question:', error); // Log error for debugging
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 };

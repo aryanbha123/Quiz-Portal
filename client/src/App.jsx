@@ -9,6 +9,7 @@ import { auth } from './firebase'
 import ProtectedRoute, { UserRoute } from './components/auth/Protectedoutes'
 import Loader from './components/utils/Loader'
 import { getQuiz } from './redux/api/getQuiz'
+import ComingSoon from './components/pages/user/ComingSoon'
 
 export default function App () {
   const { user, loading, error } = useSelector(s => s.auth)
@@ -23,14 +24,14 @@ export default function App () {
 
   // Quiz  Fetch
   useEffect(() => {
-    getQuiz({page:1});
+    getQuiz();
   }, []);
 
   // User Routes
   const UserDashboard = lazy(() => import('./components/pages/user/Userdashboard'));
   const Profile = lazy(() => import('./components/pages/user/Profile'));
   const Practice = lazy(() => import('./components/pages/user/Practice'));
-  const Home = lazy(() => import('./components/pages/user/Home'));
+  const UserHome = lazy(() => import('./components/pages/user/Home'));
   const Solution = lazy(() => import('./components/pages/user/Solutions'));
   // Admin Routes
   const AdminDashboard = lazy(() => import('./components/pages/admin/Dashboard'));
@@ -40,7 +41,11 @@ export default function App () {
   // Shared Routes
   const Login = lazy(() => import('./components/pages/Login'))
   const Signup = lazy(() => import('./components/pages/Signup'))
-  return (
+  // Website Routes
+  const Home = lazy(() => import('./components/pages/app/Home'));
+  // Layout 
+  const Layout = lazy(() => import('./components/layout/Layout'));
+  return ( 
     <>
       {loading ? (
         <><Loader/></>
@@ -49,17 +54,17 @@ export default function App () {
           <BrowserRouter>
             <Routes>
               <Route element={<UserRoute />}>
-                <Route path='/' element={<Login />} />
+                <Route path='/login' element={<Login />} />
                 <Route path='/Signup' element={<Signup />} />
               </Route>
               <Route element={<ProtectedRoute requiredRole={'user'} />}>
                 <Route path='/user' element={<UserDashboard />}>
-                    <Route index element={<Home/>} />
+                    <Route index element={<UserHome/>} />
                     <Route path='profile' element={<><Profile/></>} />
-                    <Route path='settings' element={<>User </>} />
-                    <Route path='analysis' element={<>User Settings</>} />
+                    <Route path='settings' element={<><ComingSoon/> </>} />
+                    <Route path='analysis' element={<><ComingSoon/></>} />
                     <Route path='practice' element={<><Practice/></>} />
-                    <Route path='roadmaps' element={<>User Settings</>} />
+                    <Route path='roadmaps' element={<><ComingSoon/></>} />
                   </Route>
                 </Route>
               <Route element={<ProtectedRoute requiredRole={'user'} />} >
@@ -71,6 +76,8 @@ export default function App () {
                   <Route path='edit/:id' element={<EditQuiz/>}  />
                 </Route> 
               </Route>
+
+              <Route path=''  element={<Layout><Home/></Layout>} />
               <Route path='*' element={<Navigate to={'/'} />} />
             </Routes>
 

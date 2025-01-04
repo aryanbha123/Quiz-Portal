@@ -24,13 +24,11 @@ const QuestionSchema = Schema({
 
 const QuizSchema = Schema(
     {
-        category:{type:String , enum:['Aptitude' , 'Miscellenous' , 'Core'] },
-        difficulty: { type: [String], default: [] },// Easy , medum
+        category:{type:String , enum:['Aptitude' , 'Miscellaneous' , 'Core'] },
+        difficulty: { type:String,enum:['Easy','Medium' , 'Hard'] ,  default: 'Medium' },// Easy , medum
         tags: { type: [String], default: [] }, // #oops , #core 
         creator: { type:String, ref: 'Users', required: true },
         title: { type: String },
-        opensAt: { type: Date, required: true },
-        closeAt: { type: Date, required: true },
         duration: { type: Number, required: true },
         questions: [QuestionSchema], // Corrected this line
         marks: { type: Number, required: true },

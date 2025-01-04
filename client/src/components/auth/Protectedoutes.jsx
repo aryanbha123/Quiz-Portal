@@ -12,7 +12,7 @@ const ProtectedRoute = ({requiredRole}) => {
         dispatch(setLocation(location.pathname));
     }, [dispatch, location.pathname]);
 
-    return user?.role == requiredRole ? <Outlet /> : <Navigate to="/" replace />;
+    return user?.role == requiredRole ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

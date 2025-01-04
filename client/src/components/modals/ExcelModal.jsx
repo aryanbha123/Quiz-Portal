@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import LoadingModal from '../utils/Loader';
 import axios from 'axios';
 import { csvToJson } from '../utils/libs/jsonParser';
+import { BASE_URL } from '../../config';
 
 export default function ExcelModal({ setModalClose, id }) {
     const [file, setFiles] = useState(null);
@@ -33,7 +34,7 @@ export default function ExcelModal({ setModalClose, id }) {
         try {
             const data = await csvToJson(file , id);
             console.log(data);
-            const res = axios.post(`${process.env.REACT_APP_API_URL}/api/quiz/add/questions`, {data:data , quizId:id}, {
+            const res = axios.post(`${BASE_URL}/api/v1/quiz/add/questions`, {data:data , quizId:id}, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

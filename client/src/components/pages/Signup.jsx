@@ -1,7 +1,4 @@
-import {
-  useInputValidation,
-  useStrongPassword
-} from '6pp'
+import { useInputValidation, useStrongPassword } from '6pp'
 import React, { useEffect } from 'react'
 import { EmailSvg, GoogleSvg, NameSvg, PasswordSvg } from '../utils/Svg'
 import axios from 'axios'
@@ -34,7 +31,7 @@ export default function Signup () {
           withCredentials: true
         }
       )
-      dispacth(loginSuccess(res.data));
+      dispacth(loginSuccess(res.data))
     } catch (error) {
       console.log(error.message)
     } finally {
@@ -68,6 +65,37 @@ export default function Signup () {
 
   return (
     <>
+      <header className='flex bg-white z-40 items-center top-0 h-[70px] relative  w-full justify-between shadow-lg'>
+        <nav className='flex bg-white z-40 items-center px-6 fixed  h-[70px] w-full justify-between shadow-lg'>
+          <video
+            src='/assets/techease.mp4'
+            autoPlay
+            loop
+            muted
+            playsInline
+            className='h-[70px]'
+          ></video>
+          <Link
+            to={'/'}
+            class='flex items-center rounded-md border border-slate-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-slate-600 hover:text-white hover:bg-slate-800 hover:border-slate-800 focus:text-white focus:bg-slate-800 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
+            type='button'
+          >
+            Homepage
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 24 24'
+              fill='currentColor'
+              class='w-4 h-4 ml-1.5'
+            >
+              <path
+                fill-rule='evenodd'
+                d='M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z'
+                clip-rule='evenodd'
+              />
+            </svg>
+          </Link>
+        </nav>
+      </header>
       <main className='font-[Lato] justify-center items-center flex lg:py-0 py-10'>
         {/* <section className='flex flex-col shadow-xl p-10 items-center gap-5'>
           <div>
@@ -168,7 +196,7 @@ export default function Signup () {
           </Button>
         </section> */}
 
-        <form  onSubmit={handleSignUp} className='form md:shadow-lg'>
+        <form onSubmit={handleSignUp} className='form md:shadow-lg'>
           <div className='flex justify-center'>
             {/* <img className='w-24 rounded-xl' src='/assets/image.png' alt='' /> */}
           </div>
@@ -234,16 +262,12 @@ export default function Signup () {
           <div className='flex-row'>
             <span className='span'>Forgot password?</span>
           </div>
-          <button
-          type='submit'
-           
-            className='button-submit'
-          >
+          <button type='submit' className='button-submit'>
             Sign Up
           </button>
           <p className='p'>
             Already a user ?{' '}
-            <Link to='/' className='span'>
+            <Link to='/login' className='span'>
               Sign In
             </Link>
           </p>

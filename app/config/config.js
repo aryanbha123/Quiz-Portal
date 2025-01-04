@@ -3,6 +3,7 @@ configDotenv();
 export const USER_JWT_SECRET = "FDSHHSDJDS";
 export const ADMIN_JWT_SECRET = "shgdsjdsjds";
 import mongoose from "mongoose";
+
 export const corsConfig = {
     origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
