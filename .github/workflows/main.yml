@@ -1,31 +1,28 @@
-name: Echo Workflow for Specific Folders
+name: Deploy to EC2
 
 on:
   push:
-    paths:
-      - 'app/**'      # Trigger for changes in the 'app' folder
-      - 'client/**'   # Trigger for changes in the 'client' folder
-  pull_request:
-    paths:
-      - 'app/**'      # Trigger for pull requests affecting the 'app' folder
-      - 'client/**'   # Trigger for pull requests affecting the 'client' folder
+    branches:
+      - main
 
 jobs:
-  echo-message:
-    runs-on: ubuntu-latest   # Runs on the latest version of Ubuntu
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3   # Checkout the code of the repository
-      
-      - name: Echo a message for app folder changes
-        run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^app/'; then
-            echo "Changes detected in the 'app' folder!"
-          fi
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Echo a message for client folder changes
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+      - name: Deploy to EC2
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^client/'; then
-            echo "Changes detected in the 'client' folder!"
-          fi
+          ssh -o StrictHostKeyChecking=no ubuntu@65.0.199.18 << 'EOF'
+            cd /home/ubuntu/Quiz-Portal/app
+            git pull
+            npm install
+            pm2 restart app.js
+          EOF

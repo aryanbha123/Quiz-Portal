@@ -26,7 +26,7 @@ app.use(cors(corsConfig));
 app.use(morgan('dev'));
 
 app.get('/',(req,res)=>{
-  res.send('Hello World!')
+  res.json({msg:'Hello World!'})
 })
 
 
