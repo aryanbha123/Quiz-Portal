@@ -2,5 +2,4 @@
 /client/.env
 /client/node_modules
 /app/node_modules
-/app/config/serviceAccountKey.js
 /test
