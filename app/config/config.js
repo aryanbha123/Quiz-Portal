@@ -5,7 +5,7 @@ export const ADMIN_JWT_SECRET = "shgdsjdsjds";
 import mongoose from "mongoose";
 
 export const corsConfig = {
-    origin: "http://localhost:3000",
+    origin: process.env.CORS_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
