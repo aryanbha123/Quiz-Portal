@@ -21,15 +21,8 @@ const app = express();
 })();
 app.use(express.json());
 app.use(cookieParser());
-// app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsConfig));
 app.use(morgan('dev'));
-
-app.get('/',(req,res)=>{
-  res.json({msg:'Hello World!'})
-})
-
-
 
 app.get('/university/data/:name/',async (req, res) => {
   try {
@@ -46,7 +39,6 @@ app.get('/university/data/:name/',async (req, res) => {
   }
 });
 
-// your routes here
 app.use('/api/v1/auth/', AuthRouter);
 app.use('/api/v1/solution/', solutionRouter);
 app.use('/api/v1/', QuizRouter);
